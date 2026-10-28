@@ -458,15 +458,7 @@ def _write_rows(
     local_psv: Path,
     schema=None,
 ) -> tuple[Path, str, dict]:
-    local_psv.parent.mkdir(parents=True, exist_ok=True)
-    with local_psv.open("w", newline="") as fh:
-        writer = csv.writer(fh, delimiter="|", lineterminator="\n")
-        writer.writerow(columns)
-        for row in rows:
-            writer.writerow(_text(v) for v in row)
-    fmt = {"format": "Csv", "header": True, "delimiter": "|"}
-    rel = f"{UPLOAD_DIR}/{local_psv.name}"
-    local = local_psv
+    local_parquet.parent.mkdir(parents=True, exist_ok=True)
     try:
         import pyarrow as pa
         import pyarrow.parquet as pq
@@ -475,15 +467,19 @@ def _write_rows(
             {col: [row[i] for row in rows] for i, col in enumerate(columns)}, schema=schema
         )
         pq.write_table(table, local_parquet, store_decimal_as_integer=True)
-        local = local_parquet
-        rel = f"{UPLOAD_DIR}/{local_parquet.name}"
-        fmt = {"format": "Parquet"}
+        return local_parquet, f"{UPLOAD_DIR}/{local_parquet.name}", {"format": "Parquet"}
     except ImportError:
         global _WARNED_NO_PYARROW
         if not _WARNED_NO_PYARROW:
             print("pyarrow not installed (pip install pyarrow, then restart the kernel); uploading pipe-delimited CSV")
             _WARNED_NO_PYARROW = True
-    return local, rel, fmt
+    # Pipe-delimited fallback, written only when pyarrow is missing.
+    with local_psv.open("w", newline="") as fh:
+        writer = csv.writer(fh, delimiter="|", lineterminator="\n")
+        writer.writerow(columns)
+        for row in rows:
+            writer.writerow(_text(v) for v in row)
+    return local_psv, f"{UPLOAD_DIR}/{local_psv.name}", {"format": "Csv", "header": True, "delimiter": "|"}
 
 
 _WARNED_NO_PYARROW = False

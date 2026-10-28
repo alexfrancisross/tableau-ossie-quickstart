@@ -42,7 +42,36 @@ Worked files, in this folder:
 
 ### Prerequisites
 
-- This `quickstart/` folder at the root of an [Apache Ossie](https://github.com/apache/ossie) clone
+- This folder (however it's named locally — the notebook detects it by its `helpers/connect.py` +
+  `README.md` signature, not by name) at the root of an [Apache Ossie](https://github.com/apache/ossie)
+  clone, alongside a `converters/tableau` (or `tableau`) checkout with `ossie_tableau` importable from
+  its `src/`.
+
+  The Tableau converter isn't in `apache/ossie` itself yet — it lives in the separate
+  [apache/ossie-converters](https://github.com/apache/ossie-converters) repo. Until that converter is
+  merged (or `ossie-converters` is released as a stable, versioned source), build the layout like this,
+  **pinned to commit `edb9f2400e694b0b19c12db061f63abfd7bc1599`** of `ossie-converters` (and the matching
+  `apache/ossie` commit it was tested against, `f098821eb16c05c49ca5631178e454f4367da452`):
+
+  ```sh
+  # Apache Ossie clone root
+  git clone https://github.com/apache/ossie
+  cd ossie
+  git checkout f098821eb16c05c49ca5631178e454f4367da452
+
+  # Tableau (and other) converters, alongside it
+  git clone https://github.com/apache/ossie-converters converters
+  cd converters
+  git checkout edb9f2400e694b0b19c12db061f63abfd7bc1599
+
+  # This quickstart folder
+  cd ..
+  git clone <this repo's URL> tableau-ossie-quickstart
+  ```
+
+  **Re-check this pin before relying on it** — once the Tableau converter lands in `apache/ossie`
+  proper, or `ossie-converters` cuts a stable release, these instructions and the pinned commits above
+  should be replaced with that supported source instead.
 - A Python 3.11+ Jupyter kernel
 - Tableau Desktop, to open [tpch_snowflake.twb](workbooks/tpch_snowflake.twb)
 - A Snowflake account with `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`, a `[default]` entry in `~/.snowflake/connections.toml`, and one run of [sql/setup_snowflake.sql](sql/setup_snowflake.sql) as `ACCOUNTADMIN` (creates the least-privilege role `OSSIE_QS_ROLE`, the `OSSIE_TABLEAU` database and the dbt role grants). The notebook then runs as `OSSIE_QS_ROLE`
@@ -68,7 +97,7 @@ Worked files, in this folder:
 
 ### What You'll Build
 
-- `quickstart/out/*.ossie.yaml` plus a `.loss.json` per datasource
+- `out/*.ossie.yaml` plus a `.loss.json` per datasource (under this folder)
 - Snowflake semantic view `OSSIE_TABLEAU.OSSIE_QS.SV_01_TPCH`
 - A Tableau Data Source `.tds`
 - Optionally: `semantic_manifest.json`, a Power BI sibling YAML, `out/model.bim`, Fabric lakehouse `ossie_qs_lh`, and semantic model `ossie-qs-tpch`
@@ -77,10 +106,11 @@ Worked files, in this folder:
 
 First, as `ACCOUNTADMIN`, edit the three `SET` lines in [sql/setup_snowflake.sql](sql/setup_snowflake.sql) (user, warehouse, dbt role) and run it once, in Snowsight or with `snow sql -c <connection> --role ACCOUNTADMIN -f sql/setup_snowflake.sql`. It is idempotent.
 
-Then open the notebook from the Ossie clone root:
+Then open the notebook from the Ossie clone root (substitute this folder's actual name if you didn't
+name it `quickstart`):
 
 ```sh
-jupyter notebook quickstart/tableau_ossie_quickstart.ipynb
+jupyter notebook tableau-ossie-quickstart/tableau_ossie_quickstart.ipynb
 ```
 
 Snowflake credentials come only from the `[default]` entry in `~/.snowflake/connections.toml` (it must be the user you pass to the setup script). For the optional dbt Cloud and Power BI steps, copy `.env.example` to `.env` in this folder and fill it in.
@@ -131,7 +161,7 @@ OK   tpch_snowflake__tpch_semantic_model: {'datasets': 6, 'fields': 54, 'relatio
 - **`fields: 54`**: columns carried over as Ossie fields, plus the row-level `customer_label`.
 - **`relationships: 5`**: the TPC-H joins.
 - **`metrics: 2`**: `total_revenue` and `revenue_per_customer`.
-- **`unconverted_calcs: 1`**: the FIXED LOD `customer_lifetime_revenue` is parked (kind `lod`).
+- **`unconverted_calcs: 1`**: the FIXED LOD `customer_lifetime_revenue` is parked (kind `lod`). It sums an expression across `LINEITEM` and `CUSTOMER`, which convert doesn't translate. A simpler single-table `{FIXED [d]: SUM([x])}` is emitted with window SQL instead (kind `lod_translated`).
 - **`row_level_fields: 1`**: `customer_label`.
 - **`losses=3`**: one warning (`lod`) plus two info losses (`relationship_cardinality`, `semantic_values`). Nothing is dropped silently.
 
