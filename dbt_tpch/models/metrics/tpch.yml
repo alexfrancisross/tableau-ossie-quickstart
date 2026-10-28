@@ -1,0 +1,26 @@
+version: 2
+
+metrics:
+  - name: total_revenue
+    description: SUM of line-item extended price after discount.
+    type: simple
+    label: Total Revenue
+    type_params:
+      measure:
+        name: revenue
+  - name: customers
+    description: Distinct customers who placed an order.
+    type: simple
+    label: Customers
+    type_params:
+      measure:
+        name: customers
+  - name: revenue_per_customer
+    description: Total revenue divided by distinct customers.
+    type: ratio
+    label: Revenue Per Customer
+    type_params:
+      numerator:
+        name: total_revenue
+      denominator:
+        name: customers

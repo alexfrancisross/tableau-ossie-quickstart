@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: tpch_sf1
+    description: Snowflake sample TPC-H SF1. Staging views select from these tables.
+    database: SNOWFLAKE_SAMPLE_DATA
+    schema: TPCH_SF1
+    tables:
+      - name: LINEITEM
+      - name: ORDERS
+      - name: CUSTOMER

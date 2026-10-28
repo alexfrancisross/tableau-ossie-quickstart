@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<workbook original-version="18.1" source-build="2024.2.2" source-platform="mac" version="18.1">
+  <document-format-change-manifest>
+    <_.fcp.ObjectModelEncapsulateLegacy.true...ObjectModelEncapsulateLegacy />
+    <_.fcp.ObjectModelTableType.true...ObjectModelTableType />
+    <_.fcp.SchemaViewerObjectModel.true...SchemaViewerObjectModel />
+  </document-format-change-manifest>
+  <datasources>
+    <datasource caption="INCLUDE EXCLUDE LOD" inline="true" name="federated.1c8e0f6a9b2d4e80" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="account.snowflakecomputing.com" name="snowflake.tp001">
+            <connection authentication="Username Password" class="snowflake" dbname="SNOWFLAKE_SAMPLE_DATA" odbc-connect-string-extras="" one-time-sql="" schema="TPCH_SF1" server="account.snowflakecomputing.com" service="SYSADMIN" username="u" warehouse="XSMALL" />
+          </named-connection>
+        </named-connections>
+        <_.fcp.ObjectModelEncapsulateLegacy.false...relation type="collection">
+          <relation connection="snowflake.tp001" name="LINEITEM" table="[SNOWFLAKE_SAMPLE_DATA].[TPCH_SF1].[LINEITEM]" type="table">
+            <columns>
+              <column datatype="integer" name="L_ORDERKEY" ordinal="0" />
+              <column datatype="integer" name="L_LINENUMBER" ordinal="1" />
+              <column datatype="real" name="L_QUANTITY" ordinal="2" />
+              <column datatype="real" name="L_EXTENDEDPRICE" ordinal="3" />
+              <column datatype="real" name="L_DISCOUNT" ordinal="4" />
+              <column datatype="string" name="L_RETURNFLAG" ordinal="5" />
+              <column datatype="string" name="L_LINESTATUS" ordinal="6" />
+              <column datatype="date" name="L_SHIPDATE" ordinal="7" />
+              <column datatype="string" name="L_SHIPMODE" ordinal="8" />
+            </columns>
+          </relation>
+        </_.fcp.ObjectModelEncapsulateLegacy.false...relation>
+        <_.fcp.ObjectModelEncapsulateLegacy.true...relation type="collection">
+          <relation connection="snowflake.tp001" name="LINEITEM" table="[SNOWFLAKE_SAMPLE_DATA].[TPCH_SF1].[LINEITEM]" type="table">
+            <columns>
+              <column datatype="integer" name="L_ORDERKEY" ordinal="0" />
+              <column datatype="integer" name="L_LINENUMBER" ordinal="1" />
+              <column datatype="real" name="L_QUANTITY" ordinal="2" />
+              <column datatype="real" name="L_EXTENDEDPRICE" ordinal="3" />
+              <column datatype="real" name="L_DISCOUNT" ordinal="4" />
+              <column datatype="string" name="L_RETURNFLAG" ordinal="5" />
+              <column datatype="string" name="L_LINESTATUS" ordinal="6" />
+              <column datatype="date" name="L_SHIPDATE" ordinal="7" />
+              <column datatype="string" name="L_SHIPMODE" ordinal="8" />
+            </columns>
+          </relation>
+        </_.fcp.ObjectModelEncapsulateLegacy.true...relation>
+        <metadata-records>
+          <metadata-record class="column">
+            <remote-name>L_ORDERKEY</remote-name>
+            <remote-type>131</remote-type>
+            <local-name>[L_ORDERKEY]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_ORDERKEY</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_LINENUMBER</remote-name>
+            <remote-type>131</remote-type>
+            <local-name>[L_LINENUMBER]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_LINENUMBER</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_QUANTITY</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[L_QUANTITY]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_QUANTITY</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>real</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_EXTENDEDPRICE</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[L_EXTENDEDPRICE]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_EXTENDEDPRICE</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>real</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_DISCOUNT</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[L_DISCOUNT]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_DISCOUNT</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>real</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_RETURNFLAG</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[L_RETURNFLAG]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_RETURNFLAG</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_LINESTATUS</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[L_LINESTATUS]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_LINESTATUS</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_SHIPDATE</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[L_SHIPDATE]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_SHIPDATE</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>date</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class="column">
+            <remote-name>L_SHIPMODE</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[L_SHIPMODE]</local-name>
+            <parent-name>[LINEITEM]</parent-name>
+            <remote-alias>L_SHIPMODE</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[LINEITEM_QS_LOD]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <column datatype="integer" name="[L_ORDERKEY]" role="dimension" type="ordinal" />
+      <column datatype="integer" name="[L_LINENUMBER]" role="dimension" type="ordinal" />
+      <column datatype="real" name="[L_QUANTITY]" role="measure" type="quantitative" />
+      <column datatype="real" name="[L_EXTENDEDPRICE]" role="measure" type="quantitative" />
+      <column datatype="real" name="[L_DISCOUNT]" role="measure" type="quantitative" />
+      <column datatype="string" name="[L_RETURNFLAG]" role="dimension" type="nominal" />
+      <column datatype="string" name="[L_LINESTATUS]" role="dimension" type="nominal" />
+      <column datatype="date" name="[L_SHIPDATE]" role="dimension" type="ordinal" />
+      <column datatype="string" name="[L_SHIPMODE]" role="dimension" type="nominal" />
+      <column caption="Sales Include Shipmode" datatype="real" name="[Calculation_include]" role="measure" type="quantitative">
+        <calculation class="tableau" formula="{INCLUDE [L_SHIPMODE]: SUM([L_EXTENDEDPRICE])}" />
+      </column>
+      <column caption="Quantity Exclude Returnflag" datatype="real" name="[Calculation_exclude]" role="measure" type="quantitative">
+        <calculation class="tableau" formula="{EXCLUDE [L_RETURNFLAG]: SUM([L_QUANTITY])}" />
+      </column>
+      <object-graph>
+        <objects>
+          <object caption="LINEITEM" id="LINEITEM_QS_LOD">
+            <properties context="">
+              <relation connection="snowflake.tp001" name="LINEITEM" table="[SNOWFLAKE_SAMPLE_DATA].[TPCH_SF1].[LINEITEM]" type="table">
+                <columns>
+                  <column datatype="integer" name="L_ORDERKEY" ordinal="0" />
+                  <column datatype="integer" name="L_LINENUMBER" ordinal="1" />
+                  <column datatype="real" name="L_QUANTITY" ordinal="2" />
+                  <column datatype="real" name="L_EXTENDEDPRICE" ordinal="3" />
+                  <column datatype="real" name="L_DISCOUNT" ordinal="4" />
+                  <column datatype="string" name="L_RETURNFLAG" ordinal="5" />
+                  <column datatype="string" name="L_LINESTATUS" ordinal="6" />
+                  <column datatype="date" name="L_SHIPDATE" ordinal="7" />
+                  <column datatype="string" name="L_SHIPMODE" ordinal="8" />
+                </columns>
+              </relation>
+            </properties>
+          </object>
+        </objects>
+        <relationships />
+      </object-graph>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name="Sheet 1">
+      <table>
+        <view>
+          <datasources>
+            <datasource name="federated.1c8e0f6a9b2d4e80" />
+          </datasources>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Automatic" />
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows source-height="30">
+    <window class="worksheet" maximized="true" name="Sheet 1">
+      <cards>
+        <edge name="left">
+          <strip size="160">
+            <card type="pages" />
+            <card type="filters" />
+            <card type="marks" />
+          </strip>
+        </edge>
+        <edge name="top">
+          <strip size="2147483647">
+            <card type="columns" />
+          </strip>
+          <strip size="2147483647">
+            <card type="rows" />
+          </strip>
+          <strip size="31">
+            <card type="title" />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+  </windows>
+</workbook>

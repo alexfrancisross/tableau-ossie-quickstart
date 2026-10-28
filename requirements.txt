@@ -1,0 +1,13 @@
+# Tested versions. Licenses: snowflake-connector-python Apache-2.0, pyarrow Apache-2.0,
+# PyYAML MIT, sqlglot MIT, pydantic MIT, metricflow (dbt-metricflow) Apache-2.0.
+snowflake-connector-python==4.4.0
+pyarrow==21.0.0
+PyYAML==6.0.3
+sqlglot==30.17.0
+pydantic==2.13.3
+# Optional, for the dbt conversion step
+metricflow
+# ossie, ossie_tableau, ossie_dbt and ossie_microsoft are not installed from PyPI here.
+# They come from clones of https://github.com/apache/ossie and
+# https://github.com/apache/ossie-converters (see PR #82 for the Tableau converter)
+# and are put on sys.path by the notebook.

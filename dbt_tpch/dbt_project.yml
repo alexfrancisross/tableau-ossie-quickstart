@@ -1,0 +1,20 @@
+name: ossie_qs_tpch
+version: "1.0.0"
+config-version: 2
+profile: ossie_qs_tpch
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - target
+  - dbt_packages
+  - logs
+
+models:
+  ossie_qs_tpch:
+    +materialized: view

@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: metricflow_time_spine
+    description: MetricFlow day time spine for TPC-H SF1 dates (1992-1998).
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        granularity: day

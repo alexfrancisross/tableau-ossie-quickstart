@@ -1,0 +1,50 @@
+version: 2
+
+semantic_models:
+  - name: lineitem
+    description: TPC-H line items. Grain is one row per order line.
+    model: ref('stg_lineitem')
+    defaults:
+      agg_time_dimension: l_shipdate
+    entities:
+      - name: line_item
+        type: primary
+        expr: l_orderkey || '-' || l_linenumber
+      - name: order
+        type: foreign
+        expr: l_orderkey
+    dimensions:
+      - name: l_shipdate
+        type: time
+        type_params:
+          time_granularity: day
+        expr: l_shipdate
+    measures:
+      - name: revenue
+        description: SUM of extended price after discount.
+        agg: sum
+        expr: l_extendedprice * (1 - l_discount)
+
+  - name: orders
+    description: TPC-H orders. Grain is one row per order.
+    model: ref('stg_orders')
+    defaults:
+      agg_time_dimension: o_orderdate
+    entities:
+      - name: order
+        type: primary
+        expr: o_orderkey
+      - name: customer
+        type: foreign
+        expr: o_custkey
+    dimensions:
+      - name: o_orderdate
+        type: time
+        type_params:
+          time_granularity: day
+        expr: o_orderdate
+    measures:
+      - name: customers
+        description: Distinct customers who placed an order.
+        agg: count_distinct
+        expr: o_custkey
