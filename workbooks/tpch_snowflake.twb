@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
 
 <!-- build 20262.26.0819.2015                               -->
-<workbook _.fcp.WorkbookFingerprinting.true...author-id='a3a6a82a323935fa90a356eb032c4d25f574e70ba92c5210670c4e190beb7396' _.fcp.WorkbookFingerprinting.true...creator-author-id='a3a6a82a323935fa90a356eb032c4d25f574e70ba92c5210670c4e190beb7396' _.fcp.WorkbookFingerprinting.true...creator-license-type='free' _.fcp.WorkbookFingerprinting.true...creator-machine-id='5e92e286a9eeca90fb9dbff3b9dd479b87ad9d6ac86633dd961ba2ba27eddf7f' _.fcp.WorkbookFingerprinting.true...license-type='free' _.fcp.WorkbookFingerprinting.true...machine-id='5e92e286a9eeca90fb9dbff3b9dd479b87ad9d6ac86633dd961ba2ba27eddf7f' original-version='18.1' source-build='2026.2.2 (20262.26.0819.2015)' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+<workbook original-version='18.1' source-build='2026.2.2 (20262.26.0819.2015)' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
   <document-format-change-manifest>
     <AnimationOnByDefault />
     <MarkAnimation />

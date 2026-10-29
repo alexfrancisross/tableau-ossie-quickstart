@@ -42,36 +42,28 @@ Worked files, in this folder:
 
 ### Prerequisites
 
-- This folder (however it's named locally — the notebook detects it by its `helpers/connect.py` +
-  `README.md` signature, not by name) at the root of an [Apache Ossie](https://github.com/apache/ossie)
-  clone, alongside a `converters/tableau` (or `tableau`) checkout with `ossie_tableau` importable from
-  its `src/`.
+- A checkout of [apache/ossie-converters](https://github.com/apache/ossie-converters) with this folder cloned
+  inside it. The notebook finds the `tableau/`, `dbt/` and `microsoft/` converters at that checkout's root
+  and the Apache Ossie core in its `ossie/` submodule. This folder is detected by its `helpers/connect.py` +
+  `README.md` signature, so its name does not matter.
 
-  The Tableau converter isn't in `apache/ossie` itself yet — it lives in the separate
-  [apache/ossie-converters](https://github.com/apache/ossie-converters) repo. Until that converter is
-  merged (or `ossie-converters` is released as a stable, versioned source), build the layout like this,
-  **pinned to commit `edb9f2400e694b0b19c12db061f63abfd7bc1599`** of `ossie-converters` (and the matching
-  `apache/ossie` commit it was tested against, `f098821eb16c05c49ca5631178e454f4367da452`):
+  > **The Tableau converter is not released yet.** It is in the open pull request
+  > [apache/ossie-converters#82](https://github.com/apache/ossie-converters/pull/82), so these steps pin
+  > that PR's head commit. A plain clone does not include it, hence the `fetch`.
 
   ```sh
-  # Apache Ossie clone root
-  git clone https://github.com/apache/ossie
-  cd ossie
-  git checkout f098821eb16c05c49ca5631178e454f4367da452
-
-  # Tableau (and other) converters, alongside it
-  git clone https://github.com/apache/ossie-converters converters
-  cd converters
+  git clone https://github.com/apache/ossie-converters
+  cd ossie-converters
+  git fetch origin pull/82/head
   git checkout edb9f2400e694b0b19c12db061f63abfd7bc1599
+  git submodule update --init ossie   # Apache Ossie core, pinned by the commit above
 
-  # This quickstart folder
-  cd ..
-  git clone <this repo's URL> tableau-ossie-quickstart
+  git clone https://github.com/alexfrancisross/tableau-ossie-quickstart
+  cd tableau-ossie-quickstart
   ```
 
-  **Re-check this pin before relying on it** — once the Tableau converter lands in `apache/ossie`
-  proper, or `ossie-converters` cuts a stable release, these instructions and the pinned commits above
-  should be replaced with that supported source instead.
+  Run everything below from `tableau-ossie-quickstart/`. **Re-check this pin before relying on it**:
+  once PR #82 merges or `ossie-converters` cuts a release, replace these steps with that supported source.
 - A Python 3.11+ Jupyter kernel
 - Tableau Desktop, to open [tpch_snowflake.twb](workbooks/tpch_snowflake.twb)
 - A Snowflake account with `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`, a `[default]` entry in `~/.snowflake/connections.toml`, and one run of [sql/setup_snowflake.sql](sql/setup_snowflake.sql) as `ACCOUNTADMIN` (creates the least-privilege role `OSSIE_QS_ROLE`, the `OSSIE_TABLEAU` database and the dbt role grants). The notebook then runs as `OSSIE_QS_ROLE`
@@ -106,11 +98,10 @@ Worked files, in this folder:
 
 First, as `ACCOUNTADMIN`, edit the three `SET` lines in [sql/setup_snowflake.sql](sql/setup_snowflake.sql) (user, warehouse, dbt role) and run it once, in Snowsight or with `snow sql -c <connection> --role ACCOUNTADMIN -f sql/setup_snowflake.sql`. It is idempotent.
 
-Then open the notebook from the Ossie clone root (substitute this folder's actual name if you didn't
-name it `quickstart`):
+Then open the notebook from `tableau-ossie-quickstart/` (the `ossie-converters` checkout root also works):
 
 ```sh
-jupyter notebook tableau-ossie-quickstart/tableau_ossie_quickstart.ipynb
+jupyter notebook tableau_ossie_quickstart.ipynb
 ```
 
 Snowflake credentials come only from the `[default]` entry in `~/.snowflake/connections.toml` (it must be the user you pass to the setup script). For the optional dbt Cloud and Power BI steps, copy `.env.example` to `.env` in this folder and fill it in.
@@ -143,11 +134,11 @@ The data source is database `SNOWFLAKE_SAMPLE_DATA`, schema `TPCH_SF1`. The mode
 
 ## 3. Workbook to Ossie
 
-`ossie-tableau convert` reads the workbook as XML and writes Ossie YAML plus a classified `.loss.json` under `quickstart/out/`. The stem is `<workbook>__<datasource>` (`tpch_snowflake__tpch_semantic_model`). The notebook calls the same code in-process; the CLI equivalent is:
+`ossie-tableau convert` reads the workbook as XML and writes Ossie YAML plus a classified `.loss.json` under `out/`. The stem is `<workbook>__<datasource>` (`tpch_snowflake__tpch_semantic_model`). The notebook calls the same code in-process; the CLI equivalent is:
 
 ```sh
-uv run --project converters/tableau ossie-tableau convert \
-  quickstart/workbooks/tpch_snowflake.twb -o quickstart/out
+uv run --project ../tableau ossie-tableau convert \
+  workbooks/tpch_snowflake.twb -o out
 ```
 
 Expected summary line:

@@ -11,4 +11,4 @@ dbt run --select stg_* metricflow_time_spine
 dbt parse
 ```
 
-`OssieToMSIConverter` JSON in `quickstart/out/semantic_manifest.json` is not this project. It is an illustration of what the converter emitted; Cloud parses the YAML here.
+`OssieToMSIConverter` JSON in `out/semantic_manifest.json` is not this project. It is an illustration of what the converter emitted; Cloud parses the YAML here.
