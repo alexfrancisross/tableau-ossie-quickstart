@@ -75,7 +75,7 @@ Worked files, in this folder:
 
   [requirements.txt](requirements.txt) pins the versions this quickstart was tested with.
 
-  `ossie` and `ossie_tableau` come from the Ossie clone through `sys.path`; do not pip-install them. `pyarrow>=21` is needed for the optional Power BI Parquet export, and `metricflow` for the optional dbt conversion.
+  `ossie` and `ossie_tableau` come from the Ossie clone through `sys.path`; do not pip-install them. `pyarrow>=21` is needed for the optional Power BI Parquet export, and `metricflow` for the optional dbt conversion. `ossie_tableau` is not yet in a released Ossie version: it comes from the unmerged pull request above, so update the pin once that PR merges.
 
 - **Optional, dbt Cloud:** a Starter+ project (`ossie-qs`) git-connected with subdirectory `dbt_tpch`, a deployment environment, Semantic Layer credentials, and a job that runs `dbt run --select stg_* metricflow_time_spine` then `dbt parse`
 - **Optional, Power BI:** a service principal that is a Fabric workspace contributor with `Lakehouse.ReadWrite.All`

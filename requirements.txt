@@ -6,7 +6,7 @@ PyYAML==6.0.3
 sqlglot==30.17.0
 pydantic==2.13.3
 # Optional, for the dbt conversion step
-metricflow
+metricflow==0.213.0
 # ossie, ossie_tableau, ossie_dbt and ossie_microsoft are not installed from PyPI here.
 # They come from clones of https://github.com/apache/ossie and
 # https://github.com/apache/ossie-converters (see PR #82 for the Tableau converter)
