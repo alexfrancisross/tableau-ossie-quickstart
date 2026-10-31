@@ -50,7 +50,6 @@ Worked files, in this folder:
   > **The Tableau converter is not released yet.** It is in the open pull request
   > [apache/ossie-converters#82](https://github.com/apache/ossie-converters/pull/82), so these steps pin
   > that PR's head commit. A plain clone does not include it, hence the `fetch`.
-  >
 
   ```sh
   git clone https://github.com/apache/ossie-converters
@@ -64,8 +63,7 @@ Worked files, in this folder:
   cd tableau-ossie-quickstart
   ```
 
-  Run everything below from `tableau-ossie-quickstart/`. If the notebook stops with "put the quickstart folder at the root of an Apache Ossie clone", this folder is not inside the `ossie-converters` checkout; move it there. **Re-check this pin before relying on it**:
-  once PR #82 merges or `ossie-converters` cuts a release, replace these steps with that supported source.
+  Run everything below from `tableau-ossie-quickstart/`. If the notebook stops with "put the quickstart folder at the root of an Apache Ossie clone", this folder is not inside the `ossie-converters` checkout; move it there. **Re-check this pin before relying on it**: once PR #82 merges or `ossie-converters` cuts a release, replace these steps with that supported source.
 - A Python 3.11+ Jupyter kernel
 - Tableau Desktop, to open [tpch_snowflake.twb](workbooks/tpch_snowflake.twb)
 - A Snowflake account with `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`, a `[default]` entry in `~/.snowflake/connections.toml`, and one run of [sql/setup_snowflake.sql](sql/setup_snowflake.sql) as `ACCOUNTADMIN` (creates the least-privilege role `OSSIE_QS_ROLE`, the `OSSIE_TABLEAU` database and the dbt role grants). The notebook then runs as `OSSIE_QS_ROLE`
@@ -78,8 +76,9 @@ Worked files, in this folder:
   [requirements.txt](requirements.txt) pins the versions this quickstart was tested with.
 
   `ossie` and `ossie_tableau` come from the Ossie clone through `sys.path`; do not pip-install them. `pyarrow>=21` is needed for the optional Power BI Parquet export, and `metricflow` for the optional dbt conversion.
-- Optional, dbt Cloud: a Starter+ project (`ossie-qs`) git-connected with subdirectory `dbt_tpch`, a deployment environment, Semantic Layer credentials, and a job that runs `dbt run --select stg_* metricflow_time_spine` then `dbt parse`
-- Optional, Power BI: a service principal that is a Fabric workspace contributor with `Lakehouse.ReadWrite.All`
+
+- **Optional, dbt Cloud:** a Starter+ project (`ossie-qs`) git-connected with subdirectory `dbt_tpch`, a deployment environment, Semantic Layer credentials, and a job that runs `dbt run --select stg_* metricflow_time_spine` then `dbt parse`
+- **Optional, Power BI:** a service principal that is a Fabric workspace contributor with `Lakehouse.ReadWrite.All`
 
 ### What You'll Learn
 
@@ -118,7 +117,7 @@ cp .env.example .env
 
 `.env` is gitignored; never commit it.
 
-The known live values on SF1 are **total_revenue = 218102223885.0001** and **revenue_per_customer = 2181109.4832293302**.
+The known live values on SF1 are `total_revenue` = `218102223885.0001` and `revenue_per_customer` = `2181109.4832293302`.
 
 ## 2. Open the Tableau workbook (Optional)
 
@@ -126,7 +125,7 @@ Open [tpch_snowflake.twb](workbooks/tpch_snowflake.twb) in Tableau Desktop. Conv
 
 ![Tableau sheet](img/tab1.png)
 
-The stored Snowflake connection uses the placeholder host `account.snowflakecomputing.com`. To query live, use Data > Edit Connection, replace Server with your account host and authenticate.
+The stored Snowflake connection uses the placeholder host `account.snowflakecomputing.com`. To query live, use **Data > Edit Connection**, replace **Server** with your account host and authenticate.
 
 ![Snowflake key-pair connection](img/tab2.png)
 
@@ -200,34 +199,36 @@ Convert keeps both as metrics, attaches window SQL, and writes a non-empty `.los
 
    ![dbt Cloud environment OSSIE_QS_SF](img/dbt_cloud_2.png)
 
-   **5. Create the job `OSSIE_QS_SF_PARSE`** in the `OSSIE_QS_SF` environment with these two commands, in order:
+5. **Create the job `OSSIE_QS_SF_PARSE`** in the `OSSIE_QS_SF` environment with these two commands, in order:
 
    - `dbt run --select stg_* metricflow_time_spine` builds in `OSSIE_TABLEAU.OSSIE_QS_DBT` the three staging views (`stg_customer`, `stg_lineitem`, `stg_orders`) over the TPC-H sample tables and the `metricflow_time_spine` table of daily dates. The semantic models read the staging views, and MetricFlow uses the time spine for time-based queries. This is the only step that writes to Snowflake, which is why the dbt role needs `CREATE TABLE` / `CREATE VIEW` on that schema.
    - `dbt parse` validates the semantic models and metrics (`total_revenue`, `customers`, `revenue_per_customer`) and writes the `semantic_manifest.json` the Semantic Layer reads. No data is moved and metrics are not materialized: each query compiles to SQL over the views at request time.
 
    ![dbt Cloud parse job create](img/dbt_cloud_2a.png)
 
-   **6.** Save and run the job and verify all steps have run successfully.
+6. **Run the job.** Save and run the job and verify all steps have run successfully.
 
    ![dbt Cloud parse job success](img/dbt_cloud_3.png)
 
-   **7. Studio.** Once 4c succeeds, dbt Cloud Studio shows the MetricFlow metrics (`total_revenue`, `customers`, `revenue_per_customer`) in `models/metrics/tpch.yml`.
+7. **Studio.** Once 4c succeeds, dbt Cloud Studio shows the MetricFlow metrics (`total_revenue`, `customers`, `revenue_per_customer`) in `models/metrics/tpch.yml`.
 
    ![dbt Cloud Studio MetricFlow metrics](img/dbt_cloud.png)
-   
-   **8.** **Semantic Layer credentials.** Job credentials and Semantic Layer credentials are different objects. A green job run does not mean GraphQL can reach Snowflake through the dbt Semantic Layer. Edit the `Analytics Credentials` in the `ossie-qs` project and point them at the same Snowflake user, role, warehouse and key pair from step 2.![dbt Cloud project ossie-qs](img/dbt_cloud_4.png)
-   
-   **9. Notebook step.** Set `DBT_CLOUD_URL`, `DBT_CLOUD_TOKEN` and `DBT_CLOUD_PROJECT=ossie-qs`. `dbt_sl.deploy_and_query` triggers the dbt Cloud job and checks `total_revenue` / `revenue_per_customer` over GraphQL. Without them it skips. Tokens are never printed.
-   
-   **10. GraphQL explorer.** The notebook's last 7a cell prints your explorer URL (from `DBT_CLOUD_URL` via `dbt_sl.sl_graphql_url`), the auth header, your deployment `environmentId` and three GraphQL snippets to paste in. Use the header `{"Authorization": "Bearer <DBT_CLOUD_TOKEN>"}`, then list metrics:
-   
-   `metricsPaginated` lists `customers` (SIMPLE), `revenue_per_customer` (RATIO) and `total_revenue` (SIMPLE):
-   
-   Run both metrics with `createQuery`:
 
-   Then poll `query` with the returned `queryId` until `status` is `SUCCESSFUL`:
+8. **Semantic Layer credentials.** Job credentials and Semantic Layer credentials are different objects. A green job run does not mean GraphQL can reach Snowflake through the dbt Semantic Layer. Edit the `Analytics Credentials` in the `ossie-qs` project and point them at the same Snowflake user, role, warehouse and key pair from step 2.
 
-   `jsonResult` returns the SF1 metrics (`total_revenue` 218102223885.0001, `revenue_per_customer` 2181109.4832293303):
+   ![dbt Cloud project ossie-qs](img/dbt_cloud_4.png)
+
+9. **Notebook step.** Set `DBT_CLOUD_URL`, `DBT_CLOUD_TOKEN` and `DBT_CLOUD_PROJECT=ossie-qs`. `dbt_sl.deploy_and_query` triggers the dbt Cloud job and checks `total_revenue` / `revenue_per_customer` over GraphQL. Without them it skips. Tokens are never printed.
+
+10. **GraphQL explorer.** The notebook's last 7a cell prints your explorer URL (from `DBT_CLOUD_URL` via `dbt_sl.sl_graphql_url`), the auth header, your deployment `environmentId` and three GraphQL snippets to paste in. Use the header `{"Authorization": "Bearer <DBT_CLOUD_TOKEN>"}`, then list metrics:
+
+    `metricsPaginated` lists `customers` (SIMPLE), `revenue_per_customer` (RATIO) and `total_revenue` (SIMPLE):
+
+    Run both metrics with `createQuery`:
+
+    Then poll `query` with the returned `queryId` until `status` is `SUCCESSFUL`:
+
+    `jsonResult` returns the SF1 metrics (`total_revenue` = `218102223885.0001`, `revenue_per_customer` = `2181109.4832293303`):
 
 ### Power BI (Fabric Direct Lake)
 
@@ -237,12 +238,12 @@ Convert keeps both as metrics, attaches window SQL, and writes a non-empty `.los
 4. **What it checks.** `revenue_per_customer` is `DIVIDE(SUM('LINEITEM'[DISCOUNTED_PRICE]), DISTINCTCOUNTNOBLANK('LINEITEM'[ORDER_CUSTKEY]))`. The cell asserts that DAX. When Fabric allows `executeQueries` it also prints and asserts the metrics (`total_revenue=218102223885.0001` / `revenue_per_customer=2181109.4832293302`); when denied (`PowerBINotAuthorizedException`), it prints `model was not queried`. The deploy did not fail, so open the printed link and compare the numbers yourself. To enable it, a Fabric admin must allow service principals to use Power BI APIs and the Dataset Execute Queries REST API, and the service principal needs Build on `ossie-qs-tpch`.
 5. **Expected warnings.** `ossie_microsoft` drops Tableau `custom_extensions`, display labels have no TMSL counterpart, measures with no home table land on `CUSTOMER`, and measure data types are inferred from DAX. The notebook prints these grouped with counts.
 6. **Reading the output.**
-   - `rewrote out/...pbi.ossie.yaml`: the sibling YAML, with SQL expressions reformatted for the converter (`SUM(DISCOUNTED_PRICE)`).
-   - `loaded TPCH_SF1.LINEITEM rows 6001215`: the table is in the lakehouse; row counts are a sanity check against SF1.
-   - `measures [...]` and `wrote out/model.bim`: the two DAX measures, and the TMSL model with Direct Lake partitions on the lakehouse tables.
-   - `skipped Power BI`: `PBI_*` is unset. `model.bim` was written and the DAX checked; Fabric and Snowflake were not called.
-   - `updated ossie-qs-tpch <id>` and `refresh DirectLakeFraming completed`: the semantic model was deployed (or updated in place) and Direct Lake reframed onto the loaded tables.
-   - `open https://...`: the deployed semantic model in Fabric.
+   - **`rewrote out/...pbi.ossie.yaml`**: the sibling YAML, with SQL expressions reformatted for the converter (`SUM(DISCOUNTED_PRICE)`).
+   - **`loaded TPCH_SF1.LINEITEM rows 6001215`**: the table is in the lakehouse; row counts are a sanity check against SF1.
+   - **`measures [...]` and `wrote out/model.bim`**: the two DAX measures, and the TMSL model with Direct Lake partitions on the lakehouse tables.
+   - **`skipped Power BI`**: `PBI_*` is unset. `model.bim` was written and the DAX checked; Fabric and Snowflake were not called.
+   - **`updated ossie-qs-tpch <id>` and `refresh DirectLakeFraming completed`**: the semantic model was deployed (or updated in place) and Direct Lake reframed onto the loaded tables.
+   - **`open https://...`**: the deployed semantic model in Fabric.
 
 ![Power BI Direct Lake measures](img/pbi_directlake.png)
 
