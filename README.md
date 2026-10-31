@@ -50,19 +50,21 @@ Worked files, in this folder:
   > **The Tableau converter is not released yet.** It is in the open pull request
   > [apache/ossie-converters#82](https://github.com/apache/ossie-converters/pull/82), so these steps pin
   > that PR's head commit. A plain clone does not include it, hence the `fetch`.
+  >
 
   ```sh
   git clone https://github.com/apache/ossie-converters
   cd ossie-converters
   git fetch origin pull/82/head
   git checkout edb9f2400e694b0b19c12db061f63abfd7bc1599
-  git submodule update --init ossie   # Apache Ossie core, pinned by the commit above
+  git submodule update --init ossie   # Apache Ossie core, pinned by the commit above; no separate apache/ossie clone needed
 
+  # Clone INSIDE ossie-converters (do not cd out): the notebook looks for ./tableau and ./ossie in the parent folder
   git clone https://github.com/alexfrancisross/tableau-ossie-quickstart
   cd tableau-ossie-quickstart
   ```
 
-  Run everything below from `tableau-ossie-quickstart/`. **Re-check this pin before relying on it**:
+  Run everything below from `tableau-ossie-quickstart/`. If the notebook stops with "put the quickstart folder at the root of an Apache Ossie clone", this folder is not inside the `ossie-converters` checkout; move it there. **Re-check this pin before relying on it**:
   once PR #82 merges or `ossie-converters` cuts a release, replace these steps with that supported source.
 - A Python 3.11+ Jupyter kernel
 - Tableau Desktop, to open [tpch_snowflake.twb](workbooks/tpch_snowflake.twb)
@@ -212,17 +214,20 @@ Convert keeps both as metrics, attaches window SQL, and writes a non-empty `.los
    **7. Studio.** Once 4c succeeds, dbt Cloud Studio shows the MetricFlow metrics (`total_revenue`, `customers`, `revenue_per_customer`) in `models/metrics/tpch.yml`.
 
    ![dbt Cloud Studio MetricFlow metrics](img/dbt_cloud.png)
-5. **8.** **Semantic Layer credentials.** Job credentials and Semantic Layer credentials are different objects. A green job run does not mean GraphQL can reach Snowflake through the dbt Semantic Layer. Edit the `Analytics Credentials` in the `ossie-qs` project and point them at the same Snowflake user, role, warehouse and key pair from step 2.
-6. ![dbt Cloud project ossie-qs](img/dbt_cloud_4.png)**9. Notebook step. Set `DBT_CLOUD_URL`, `DBT_CLOUD_TOKEN` and `DBT_CLOUD_PROJECT=ossie-qs`. `dbt_sl.deploy_and_query` triggers the dbt Cloud job and checks `total_revenue` / `revenue_per_customer` over GraphQL. Without them it skips. Tokens are never printed.**
-7. ****10. GraphQL explorer.** The notebook's last 7a cell prints your explorer URL (from `DBT_CLOUD_URL` via `dbt_sl.sl_graphql_url`), the auth header, your deployment `environmentId` and three GraphQL snippets to paste in. Use the header `{"Authorization": "Bearer <DBT_CLOUD_TOKEN>"}`, then list metrics:**
+   
+   **8.** **Semantic Layer credentials.** Job credentials and Semantic Layer credentials are different objects. A green job run does not mean GraphQL can reach Snowflake through the dbt Semantic Layer. Edit the `Analytics Credentials` in the `ossie-qs` project and point them at the same Snowflake user, role, warehouse and key pair from step 2.![dbt Cloud project ossie-qs](img/dbt_cloud_4.png)
+   
+   **9. Notebook step.** Set `DBT_CLOUD_URL`, `DBT_CLOUD_TOKEN` and `DBT_CLOUD_PROJECT=ossie-qs`. `dbt_sl.deploy_and_query` triggers the dbt Cloud job and checks `total_revenue` / `revenue_per_customer` over GraphQL. Without them it skips. Tokens are never printed.
+   
+   **10. GraphQL explorer.** The notebook's last 7a cell prints your explorer URL (from `DBT_CLOUD_URL` via `dbt_sl.sl_graphql_url`), the auth header, your deployment `environmentId` and three GraphQL snippets to paste in. Use the header `{"Authorization": "Bearer <DBT_CLOUD_TOKEN>"}`, then list metrics:
+   
+   `metricsPaginated` lists `customers` (SIMPLE), `revenue_per_customer` (RATIO) and `total_revenue` (SIMPLE):
+   
+   Run both metrics with `createQuery`:
 
-   **`metricsPaginated` lists `customers` (SIMPLE), `revenue_per_customer` (RATIO) and `total_revenue` (SIMPLE):**
+   Then poll `query` with the returned `queryId` until `status` is `SUCCESSFUL`:
 
-   **Run both metrics with `createQuery`:**
-
-   **Then poll `query` with the returned `queryId` until `status` is `SUCCESSFUL`:**
-
-   **`jsonResult` returns the SF1 metrics (`total_revenue` **218102223885.0001**, `revenue_per_customer` **2181109.4832293303**):**
+   `jsonResult` returns the SF1 metrics (`total_revenue` 218102223885.0001, `revenue_per_customer` 2181109.4832293303):
 
 ### Power BI (Fabric Direct Lake)
 
